@@ -1,0 +1,43 @@
+{
+    "Datos" :  
+    {
+        "server": "189.204.141.199\\CAPACITACION",
+        "database": "ASEPROT",
+        "user": "sa",
+        "password": "S0p0rt3",
+        "port":1433
+    },
+    "Notificaciones" :
+    {
+        "host": "localhost",
+        "port": 4860,
+        "path": "",
+        "method": "GET"
+    },
+    "Foltillas":
+    {
+        "host":"http://189.204.141.199:81",
+        "Documentos":"http://189.204.141.199:81/Documentos/"
+    },
+    "Sisco" :
+    {
+        "host": "189.204.141.199",
+        "port": 5030,
+        "path": "/api/detalle/subirEvidencia/",
+        "method": "POST",
+        "headers": {
+            "Content-Type":  "multipart/form-data"
+          
+        }
+    },
+    "DoctosSisco":
+    {
+        "port": 5040
+    },
+    "Comentarios" :{
+        "Datos": "Son ls parametros para la conexión a la base de datos del servicio MiAuto",
+        "Notificaciones": "Consumimos servicios para enviar y recibir notificaciónes, estos deben estar en el mismo servidor en el que esta MiAuto",
+        "Foltillas":"Sirve para traer las 'Fotos' de los documentos y sus fechas.",
+        "Sisco": "Esta conexión controla los metodos para incrustar la evidencia de servicio y trae las 'fotos' de las partidas"
+    }
+}

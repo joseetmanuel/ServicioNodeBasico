@@ -1,0 +1,382 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Pruebita</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	<style>
+	   table {
+			font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+			border-collapse: collapse;
+			width: 80%;
+			font-size: 10px;
+		}
+		table td, table th {
+			border: 1px solid #ddd;
+			padding: 8px;
+		}
+		table tr:nth-child(even){background-color: #f2f2f2;}
+		table tr:hover {background-color: #ddd;}
+		table th {
+			padding-top: 12px;
+			padding-bottom: 12px;
+			text-align: left;
+			background-color: #33ACFF;
+			color: white;
+		}
+	</style>
+</head>
+<body>
+    <form id="form1">
+	<div>
+		<b>Logea:</b>
+	</div>
+	<div>
+		User: <input type="text" id="User" value="super.cadereyta"/>
+		Pass: <input type="text" id="Pass" value="PW1ZngDb"/>
+	
+        <input type="button" id="ServicioEnviarDatos" value="Logea" />
+    </div>
+	<hr />
+	<div>
+		<b>Registra:</b>
+		<br/><small>Requiere User y Pass</small>
+	</div>
+	<div>
+		Vin: <input type="text" id="Vin" value="12000009299"/>
+		Placas: <input type="text" id="Placas" value="PMX09299"/>
+	
+        <input type="button" id="ServicioRegistraDatos" value="Registra" />
+    </div>
+	<hr />
+	<div>
+		<b>Unidades:</b>
+		<br/><small>Requiere Logea</small>
+	</div>
+	<div>
+		IdUser: <input type="text" id="idUser" value=""/>
+		<input type="button" id="GetUnidades" value="Unidades" />
+    </div>
+	<div id="TblGetUnidades">
+		
+    </div>
+	<hr />
+	<div>
+		<b>Talleres:</b>
+		<br/><small>Requiere Logea y Unidades</small>
+	</div>
+	<div>
+		idUnidad: <input type="text" id="idUnidad" value=""/>
+		Latitud: <input type="text" id="lat" value="19.680013"/>
+		Longitud: <input type="text" id="lng" value="-99.0379683"/>
+		<input type="button" id="GetTalleres" value="Talleres" /> <input type="button" id="GetTalleresDel" value="Borra Talleres" />
+    </div>
+	<div id="TblGetTalleres">
+		
+    </div>
+	<hr />
+	<div>
+		<b>Ordenes por Unidad:</b>
+		<br/><small>Requiere Logea y Unidades</small>
+	</div>
+	<div>
+		idUnidad: <input type="text" id="idUnidad2" value="3920"/>
+		<input type="button" id="GetOrdXUni" value="Ordenes" /> <input type="button" id="GetOrdXUniDel" value="Borra Ordenes" />
+    </div>
+	<div id="TblGetOrdXUni">
+		
+    </div>
+	
+	<hr />
+	<div>
+		<b>Documentos por Unidad:</b>
+		<br/><small>Requiere Logea y Unidades</small>
+	</div>
+	<div>
+		idUnidad: <input type="text" id="idUnidad4" value="4226"/>
+		<input type="button" id="GetDocsXUni" value="Documentos" /> <input type="button" id="GetDocsXUniDel" value="Borra Documentos" />
+    </div>
+	<div id="TblGetDocsXUni">
+		
+    </div>
+	
+	<hr />
+	<div>
+		<b>Configuración:</b>
+	</div>
+	<div>
+		Id Configuracion: <input type="text" id="idConfiguracion" value="1"/>
+		<input type="button" id="ServicioCondig" value="Configuracion" />
+    </div>
+	<hr />
+	<div>
+		<b>Nueva Cita:</b>
+		<br/><small>Requiere Logea, Unidades y Talleres</small>
+	</div>
+	<div>
+		Id Unidad: <input type="text" id="idUnidad3" value=""/><br/>
+		Id Contrato: <input type="text" id="idContratoOperacion" value=""/><br/>
+		Id Usuario: <input type="text" id="idUser2" value=""/><br/>
+		Taller: <input type="text" id="idTaller" value=""/><br/>
+		Servicio: <input type="text" id="servicio" value="5000Km"/><br/>
+		Fecha Cita: <input type="text" id="fechaCita" value="2017-01-01"/><br/>
+        <input type="button" id="ServicioNuevaCita" value="Nueva Cita" />
+    </div>
+</form></body>
+<script>
+$('#ServicioEnviarDatos').click(function () {
+  var SendObj = {'user':document.getElementById("User").value, 'password':document.getElementById("Pass").value};
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:4800/Logea',
+        data: SendObj,
+        contentType: 'application/json',
+        success: function (data) {
+				//alert(data);
+				document.getElementById("idUser").value = data.idUsuario;
+				document.getElementById("idUser2").value = data.idUsuario;
+				document.getElementById("idContratoOperacion").value = data.idContratoOperacion;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+			alert("Error:"+ textStatus + ' - ' +errorThrown);
+        }
+    });
+});
+
+$('#ServicioRegistraDatos').click(function () {
+  var SendObj = {
+	'user':document.getElementById("User").value, 
+	'password':document.getElementById("Pass").value,
+	'vin':document.getElementById("Vin").value, 
+	'placas':document.getElementById("Placas").value
+  };
+  
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:4800/Registra',
+        data: SendObj,
+        contentType: 'application/json',
+        success: function (data) {
+				if(data.idUsuario!=undefined){
+				   document.getElementById("idUser").value = data.idUsuario;
+				   document.getElementById("idUser2").value = data.idUsuario;
+				   }
+				else
+				   alert(data.Msj);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+			alert(textStatus + ' - ' +errorThrown);
+        }
+ 
+    });
+});
+
+$('#GetUnidades').click(function () {
+	var SendObj = {
+	'idUser':document.getElementById("idUser").value
+	};
+	 $("#TblGetUnidades").html('');
+           
+	$.ajax({
+		type: "GET",
+		url: 'http://localhost:4800/GetUnidades',
+		data: SendObj,
+		contentType: 'application/json',
+		success: function (data) {
+			
+			var strHTML = "";
+			strHTML += '<table id="tabla"><thead><tr><th>idUnidad</th><th>placas</th><th>numeroEconomico</th><th>vin</th><th>modelo</th><th>combustible</th><th>nombreSubMarca</th><th>nombreMarca</th><th>cilindros</th><th>tipo</th><th>imagen</th></tr></thead><tbody>';
+	
+			$.each(data, function (i, unidad) {
+				strHTML += '<tr>';
+				strHTML += '<td>'+ unidad.idUnidad+'</td>';
+				strHTML += '<td>'+ unidad.placas+'</td>';
+				strHTML += '<td>'+ unidad.numeroEconomico+'</td>';
+				strHTML += '<td>'+ unidad.vin+'</td>';
+				strHTML += '<td>'+ unidad.modelo+'</td>';
+				strHTML += '<td>'+ unidad.combustible+'</td>';
+				strHTML += '<td>'+ unidad.nombreSubMarca+'</td>';
+				strHTML += '<td>'+ unidad.nombreMarca+'</td>';
+				strHTML += '<td>'+ unidad.cilindros+'</td>';
+				strHTML += '<td>'+ unidad.tipo+'</td>';
+				strHTML += '<td>'+ unidad.imagen+'</td>';
+				strHTML += '</tr>';
+				document.getElementById("idUnidad").value = unidad.idUnidad;
+				document.getElementById("idUnidad2").value = unidad.idUnidad;
+				document.getElementById("idUnidad3").value = unidad.idUnidad;
+				document.getElementById("idUnidad4").value = unidad.idUnidad;
+			});
+			
+			strHTML += '</tbody></table>';
+
+			$("#TblGetUnidades").html(strHTML);
+		},
+		error: function (xhr, status, error) {
+			alert(textStatus + ' - ' +errorThrown);
+		}
+	});
+        
+ });
+
+$('#GetTalleres').click(function () {
+	var SendObj = {
+		'idUnidad':document.getElementById("idUnidad").value,
+		'lat':document.getElementById("lat").value,
+		'lng':document.getElementById("lng").value
+	};
+	 $("#TblGetTalleres").html('');
+           
+	$.ajax({
+		type: "GET",
+		url: 'http://localhost:4800/GetTalleres',
+		data: SendObj,
+		contentType: 'application/json',
+		success: function (data) {
+			var strHTML = "";
+			strHTML += '<table class="tabla"><thead><tr><th>idProveedor</th><th>nombreComercial</th><th>idTaller</th><th>razonSocial</th><th>RFC</th><th>direccion</th><th>latitud</th><th>longitud</th><th>km</th></tr></thead><tbody>';
+	
+			$.each(data, function (i, taller) {
+				strHTML += '<tr>';
+				strHTML += '<td>'+ taller.idProveedor+'</td>';
+				strHTML += '<td>'+ taller.nombreComercial+'</td>';
+				strHTML += '<td>'+ taller.idTaller+'</td>';
+				strHTML += '<td>'+ taller.razonSocial+'</td>';
+				strHTML += '<td>'+ taller.RFC+'</td>';
+				strHTML += '<td>'+ taller.direccion+'</td>';
+				strHTML += '<td>'+ taller.latitud+'</td>';
+				strHTML += '<td>'+ taller.longitud+'</td>';
+				strHTML += '<td>'+ taller.km +'</td>';
+				strHTML += '</tr>';
+				if(i==0) document.getElementById("idTaller").value = taller.idTaller;
+			});
+			
+			strHTML += '</tbody></table>';
+
+			$("#TblGetTalleres").html(strHTML);
+		},
+		error: function (xhr, status, error) {
+			alert(status + ' - ' +error);
+		}
+	});
+        
+ });
+ 
+$('#GetTalleresDel').click(function () {$("#TblGetTalleres").html('');});
+
+$('#GetOrdXUni').click(function () {
+	var SendObj = {
+	'idUnidad':document.getElementById("idUnidad2").value
+	};
+	 $("#TblGetOrdXUni").html('');
+           
+	$.ajax({
+		type: "GET",
+		url: 'http://localhost:4800/GetOrdXUni',
+		data: SendObj,
+		contentType: 'application/json',
+		success: function (data) {
+			var strHTML = "";
+			strHTML += '<table class="tabla"><thead><tr><th>idOrden</th><th>FechaCita</th><th>numeroOrden</th><th>descripcion</th><th>tipoOrden</th></tr></thead><tbody>';
+	
+			$.each(data, function (i, unidad) {
+				strHTML += '<tr>';
+				strHTML += '<td>'+ unidad.idOrden+'</td>';
+				strHTML += '<td>'+ unidad.FechaCita+'</td>';
+				strHTML += '<td>'+ unidad.numeroOrden+'</td>';
+				strHTML += '<td>'+ unidad.descripcion+'</td>';
+				strHTML += '<td>'+ unidad.tipoOrden+'</td>';
+				strHTML += '</tr>';
+			});
+			
+			strHTML += '</tbody></table>';
+
+			$("#TblGetOrdXUni").html(strHTML);
+		},
+		error: function (xhr, status, error) {
+			alert(textStatus + ' - ' +errorThrown);
+		}
+	});
+        
+ });
+
+$('#GetDocsXUni').click(function () {
+	var SendObj = {
+	'idUnidad':document.getElementById("idUnidad4").value
+	};
+	 $("#TblGetDocsXUni").html('');
+           
+	$.ajax({
+		type: "GET",
+		url: 'http://localhost:4800/GetDocsXUni',
+		data: SendObj,
+		contentType: 'application/json',
+		success: function (data) {
+			var strHTML = "";
+			strHTML += '<table class="tabla"><thead><tr><th>placas</th><th>tarjetaDeCirculacion</th><th>PólizaDeSeguros</th><th>PagoVerificación</th><th>Tenencia</th><th>Verificación</th></tr></thead><tbody>';
+	
+			$.each(data, function (i, docto) {
+				strHTML += '<tr>';
+				strHTML += '<td>'+ docto.placas+'</td>';
+				strHTML += '<td>'+ docto.tarjetaDeCirculacion+'</td>';
+				strHTML += '<td>'+ docto.PólizaDeSeguros+'</td>';
+				strHTML += '<td>'+ docto.PagoVerificación+'</td>';
+				strHTML += '<td>'+ docto.Tenencia+'</td>';
+				strHTML += '<td>'+ docto.Verificación+'</td>';
+				strHTML += '</tr>';
+			});
+			
+			strHTML += '</tbody></table>';
+
+			$("#TblGetDocsXUni").html(strHTML);
+		},
+		error: function (xhr, status, error) {
+			alert(status + ' - ' +error);
+		}
+	});
+        
+ });
+ 
+$('#GetDocsXUniDel').click(function () {$("#TblGetDocsXUni").html('');});
+ 
+$('#GetOrdXUniDel').click(function () {$("#TblGetDocsXUni").html('');});
+ 
+$('#ServicioCondig').click(function () {
+  var SendObj = {'idConfiguracion':document.getElementById("idConfiguracion").value};
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:4800/GetConfiguracion',
+        data: SendObj,
+        contentType: 'application/json',
+        success: function (data) {
+				alert(data.configuracion);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+			alert(textStatus + ' - ' +errorThrown);
+        }
+    });
+});
+ 
+$('#ServicioNuevaCita').click(function () {
+  var SendObj = {
+	'idUnidad':document.getElementById("idUnidad3").value, 
+	'idContratoOperacion':document.getElementById("idContratoOperacion").value,
+	'idUsuario':document.getElementById("idUser2").value, 
+	'Taller':document.getElementById("idTaller").value,
+	'servicio':document.getElementById("servicio").value,
+	'fechaCita':document.getElementById("fechaCita").value
+  };
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:4800/Logea',
+        data: SendObj,
+        contentType: 'application/json',
+        success: function () {
+			alert('ok');
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+			alert('ErrorPag: '+textStatus + ' - ' +errorThrown);
+        }
+ 
+    });
+});
+ 
+</script>
+</html>
